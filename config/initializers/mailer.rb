@@ -13,7 +13,7 @@ Rails.application.configure do
 
   # Config related to smtp
   smtp_settings = {
-    address: ENV.fetch('SMTP_ADDRESS', 'smtp.sendgrid.net'),
+    address: ENV.fetch('SMTP_ADDRESS', 'localhost'),
     port: ENV.fetch('SMTP_PORT', 587)
   }
 
@@ -41,5 +41,5 @@ Rails.application.configure do
   # :mandrill for Mandrill
   # :postmark for Postmark
   # :sendgrid for Sendgrid
-  config.action_mailbox.ingress = ENV.fetch('RAILS_INBOUND_EMAIL_SERVICE', 'sendgrid').to_sym
+  config.action_mailbox.ingress = ENV.fetch('RAILS_INBOUND_EMAIL_SERVICE', 'relay').to_sym
 end
