@@ -52,7 +52,7 @@ export default {
     brandRedirectURL() {
       try {
         // const referrerHost = this.$store.getters['appConfig/getReferrerHost'];
-        const baseURL = `jelibot.com`;
+        const baseURL = `https://www.jelibot.com`;
         // if (referrerHost) {
         //   return `${baseURL}&utm_referrer=${referrerHost}`;
         // }
