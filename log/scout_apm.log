@@ -149,3 +149,14 @@
 [12/12/22 17:14:35 +0300 Sertacs-MBP.home (36273)] INFO : Not Loading Instruments
 [12/12/22 17:14:35 +0300 Sertacs-MBP.home (36273)] INFO : Scout Agent [5.2.0] Installed
 [12/12/22 17:14:35 +0300 Sertacs-MBP.home (36273)] INFO : Monitoring isn't enabled for the [development] environment.
+[12/12/22 18:45:31 +0300 Sertacs-MBP.home (49759)] INFO : No configuration file loaded, and no configuration found in ENV. For assistance configuring Scout, visit https://docs.scoutapm.com/#ruby-configuration-options
+[12/12/22 18:45:31 +0300 Sertacs-MBP.home (49757)] INFO : No configuration file loaded, and no configuration found in ENV. For assistance configuring Scout, visit https://docs.scoutapm.com/#ruby-configuration-options
+[12/12/22 18:45:31 +0300 Sertacs-MBP.home (49759)] INFO : Scout Agent [5.2.0] Initialized
+[12/12/22 18:45:31 +0300 Sertacs-MBP.home (49757)] INFO : Scout Agent [5.2.0] Initialized
+[12/12/22 18:45:31 +0300 Sertacs-MBP.home (49759)] INFO : Not Loading Instruments
+[12/12/22 18:45:31 +0300 Sertacs-MBP.home (49757)] INFO : Not Loading Instruments
+[12/12/22 18:45:31 +0300 Sertacs-MBP.home (49759)] INFO : Scout Agent [5.2.0] Installed
+[12/12/22 18:45:31 +0300 Sertacs-MBP.home (49757)] INFO : Scout Agent [5.2.0] Installed
+[12/12/22 18:45:31 +0300 Sertacs-MBP.home (49759)] INFO : Monitoring isn't enabled for the [development] environment.
+[12/12/22 18:45:31 +0300 Sertacs-MBP.home (49757)] INFO : Monitoring isn't enabled for the [development] environment.
+[12/12/22 18:45:31 +0300 Sertacs-MBP.home (49757)] INFO : Deferring agent start. Standing by for first request
