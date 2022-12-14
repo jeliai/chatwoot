@@ -18,10 +18,11 @@
     <div class="menu vertical user-menu">
       <primary-nav-item
         v-if="!isACustomBrandedInstance"
+        :href="'http://api.jelibot.com/'"
         icon="book-open-globe"
         name="DOCS"
         :open-in-new-page="true"
-        :to="helpDocsURL"
+        :to="'https://www.jelibot.com'"
       />
       <notification-bell @open-notification-panel="openNotificationPanel" />
       <agent-details @toggle-menu="toggleOptions" />
