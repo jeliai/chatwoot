@@ -8,6 +8,7 @@
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
 #  account_id        :integer          not null
+#  instagram_id      :string
 #  page_id           :string           not null
 #
 # Indexes
@@ -17,15 +18,12 @@
 #
 
 class Channel::FacebookPage < ApplicationRecord
-  self.table_name = 'channel_facebook_pages'
-
+  include Channelable
   include Reauthorizable
 
-  validates :account_id, presence: true
-  validates :page_id, uniqueness: { scope: :account_id }
-  belongs_to :account
+  self.table_name = 'channel_facebook_pages'
 
-  has_one :inbox, as: :channel, dependent: :destroy
+  validates :page_id, uniqueness: { scope: :account_id }
 
   after_create_commit :subscribe
   before_destroy :unsubscribe
@@ -34,8 +32,16 @@ class Channel::FacebookPage < ApplicationRecord
     'Facebook'
   end
 
-  def has_24_hour_messaging_window?
-    true
+  def messaging_window_enabled?
+    false
+  end
+
+  def create_contact_inbox(instagram_id, name)
+    @contact_inbox = ::ContactInboxWithContactBuilder.new({
+                                                            source_id: instagram_id,
+                                                            inbox: inbox,
+                                                            contact_attributes: { name: name }
+                                                          }).perform
   end
 
   def subscribe
@@ -43,7 +49,7 @@ class Channel::FacebookPage < ApplicationRecord
     response = Facebook::Messenger::Subscriptions.subscribe(
       access_token: page_access_token,
       subscribed_fields: %w[
-        messages message_deliveries message_echoes message_reads
+        messages message_deliveries message_echoes message_reads standby messaging_handovers
       ]
     )
   rescue => e
@@ -56,5 +62,22 @@ class Channel::FacebookPage < ApplicationRecord
   rescue => e
     Rails.logger.debug { "Rescued: #{e.inspect}" }
     true
+  end
+
+  # TODO: We will be removing this code after instagram_manage_insights is implemented
+  def fetch_instagram_story_link(message)
+    k = Koala::Facebook::API.new(page_access_token)
+    result = k.get_object(message.source_id, fields: %w[story]) || {}
+    story_link = result['story']['mention']['link']
+    # If the story is expired then it raises the ClientError and if the story is deleted with valid story-id it responses with nil
+    delete_instagram_story(message) if story_link.blank?
+    story_link
+  rescue Koala::Facebook::ClientError => e
+    delete_instagram_story(message)
+  end
+
+  def delete_instagram_story(message)
+    message.update(content: I18n.t('conversations.messages.instagram_deleted_story_content'), content_attributes: {})
+    message.attachments.destroy_all
   end
 end

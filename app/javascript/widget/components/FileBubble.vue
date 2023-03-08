@@ -1,17 +1,18 @@
 <template>
-  <div class="file message-text__wrap" @click="openLink">
-    <div class="icon-wrap">
-      <i class="ion-document-text"></i>
+  <div class="file flex flex-row items-center p-3 cursor-pointer">
+    <div class="icon-wrap" :style="{ color: textColor }">
+      <fluent-icon icon="document" size="28" />
     </div>
     <div class="meta">
-      <div class="title">
+      <div class="title" :style="{ color: textColor }">
         {{ title }}
       </div>
-      <div class="link-wrap">
+      <div class="link-wrap mb-1">
         <a
           class="download"
           rel="noreferrer noopener nofollow"
           target="_blank"
+          :style="{ color: textColor }"
           :href="url"
         >
           {{ $t('COMPONENTS.FILE_BUBBLE.DOWNLOAD') }}
@@ -22,7 +23,13 @@
 </template>
 
 <script>
+import FluentIcon from 'shared/components/FluentIcon/Index.vue';
+import { getContrastingTextColor } from '@chatwoot/utils';
+
 export default {
+  components: {
+    FluentIcon,
+  },
   props: {
     url: {
       type: String,
@@ -44,8 +51,10 @@ export default {
         : decodeURI(this.fileName);
     },
     fileName() {
-      const filename = this.url.substring(this.url.lastIndexOf('/') + 1);
-      return filename;
+      return this.url.substring(this.url.lastIndexOf('/') + 1);
+    },
+    textColor() {
+      return getContrastingTextColor(this.widgetColor);
     },
   },
   methods: {
@@ -61,11 +70,6 @@ export default {
 @import '~widget/assets/scss/variables.scss';
 
 .file {
-  display: flex;
-  flex-direction: row;
-  padding: $space-slab;
-  cursor: pointer;
-
   .icon-wrap {
     font-size: $font-size-mega;
     color: $color-woot;

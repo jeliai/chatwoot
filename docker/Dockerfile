@@ -1,5 +1,5 @@
 # pre-build stage
-FROM ruby:3.0.2-alpine AS pre-builder
+FROM ruby:3.0.4-alpine AS pre-builder
 
 # ARG default to production settings
 # For development docker-compose file overrides ARGS
@@ -15,8 +15,7 @@ ENV RAILS_ENV ${RAILS_ENV}
 
 ENV BUNDLE_PATH="/gems"
 
-RUN apk update \
-  && apk add \
+RUN apk add --no-cache \
     openssl \
     tar \
     build-base \
@@ -32,6 +31,13 @@ RUN apk update \
 WORKDIR /app
 
 COPY Gemfile Gemfile.lock ./
+
+# natively compile grpc and protobuf to support alpine musl (dialogflow-docker workflow)
+# https://github.com/googleapis/google-cloud-ruby/issues/13306
+# adding xz as nokogiri was failing to build libxml
+# https://github.com/chatwoot/chatwoot/issues/4045
+RUN apk add --no-cache musl ruby-full ruby-dev gcc make musl-dev openssl openssl-dev g++ linux-headers xz
+RUN bundle config set --local force_ruby_platform true
 
 # Do not install development or test gems in production
 RUN if [ "$RAILS_ENV" = "production" ]; then \
@@ -59,7 +65,7 @@ RUN rm -rf /gems/ruby/3.0.0/cache/*.gem \
   && find /gems/ruby/3.0.0/gems/ \( -name "*.c" -o -name "*.o" \) -delete
 
 # final build stage
-FROM ruby:3.0.2-alpine
+FROM ruby:3.0.4-alpine
 
 ARG BUNDLE_WITHOUT="development:test"
 ENV BUNDLE_WITHOUT ${BUNDLE_WITHOUT}
@@ -71,11 +77,14 @@ ENV EXECJS_RUNTIME ${EXECJS_RUNTIME}
 ARG RAILS_SERVE_STATIC_FILES=true
 ENV RAILS_SERVE_STATIC_FILES ${RAILS_SERVE_STATIC_FILES}
 
+ARG BUNDLE_FORCE_RUBY_PLATFORM=1
+ENV BUNDLE_FORCE_RUBY_PLATFORM ${BUNDLE_FORCE_RUBY_PLATFORM}
+
 ARG RAILS_ENV=production
 ENV RAILS_ENV ${RAILS_ENV}
 ENV BUNDLE_PATH="/gems"
 
-RUN apk add --update --no-cache \
+RUN apk add --no-cache \
     openssl \
     tzdata \
     postgresql-client \
@@ -84,7 +93,7 @@ RUN apk add --update --no-cache \
   && gem install bundler
 
 RUN if [ "$RAILS_ENV" != "production" ]; then \
-  apk add nodejs yarn; \
+  apk add --no-cache nodejs yarn; \
   fi
 
 COPY --from=pre-builder /gems/ /gems/

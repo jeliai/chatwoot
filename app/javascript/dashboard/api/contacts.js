@@ -52,6 +52,29 @@ class ContactAPI extends ApiClient {
     )}`;
     return axios.get(requestURL);
   }
+
+  filter(page = 1, sortAttr = 'name', queryPayload) {
+    let requestURL = `${this.url}/filter?${buildContactParams(page, sortAttr)}`;
+    return axios.post(requestURL, queryPayload);
+  }
+
+  importContacts(file) {
+    const formData = new FormData();
+    formData.append('import_file', file);
+    return axios.post(`${this.url}/import`, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+  }
+
+  destroyCustomAttributes(contactId, customAttributes) {
+    return axios.post(`${this.url}/${contactId}/destroy_custom_attributes`, {
+      custom_attributes: customAttributes,
+    });
+  }
+
+  destroyAvatar(contactId) {
+    return axios.delete(`${this.url}/${contactId}/avatar`);
+  }
 }
 
 export default new ContactAPI();

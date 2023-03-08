@@ -146,6 +146,15 @@
           />
           {{ $t('CAMPAIGN.ADD.FORM.ENABLED') }}
         </label>
+        <label v-if="isOngoingType">
+          <input
+            v-model="triggerOnlyDuringBusinessHours"
+            type="checkbox"
+            value="triggerOnlyDuringBusinessHours"
+            name="triggerOnlyDuringBusinessHours"
+          />
+          {{ $t('CAMPAIGN.ADD.FORM.TRIGGER_ONLY_BUSINESS_HOURS') }}
+        </label>
       </div>
 
       <div class="modal-footer">
@@ -162,11 +171,12 @@
 
 <script>
 import { mapGetters } from 'vuex';
-import { required, url, minLength } from 'vuelidate/lib/validators';
+import { required } from 'vuelidate/lib/validators';
 import alertMixin from 'shared/mixins/alertMixin';
 import WootMessageEditor from 'dashboard/components/widgets/WootWriter/Editor';
 import campaignMixin from 'shared/mixins/campaignMixin';
 import WootDateTimePicker from 'dashboard/components/ui/DateTimePicker.vue';
+import { URLPattern } from 'urlpattern-polyfill';
 
 export default {
   components: {
@@ -185,6 +195,7 @@ export default {
       timeOnPage: 10,
       show: true,
       enabled: true,
+      triggerOnlyDuringBusinessHours: false,
       scheduledAt: null,
       selectedAudience: [],
       senderList: [],
@@ -211,8 +222,23 @@ export default {
         },
         endPoint: {
           required,
-          minLength: minLength(7),
-          url,
+          shouldBeAValidURLPattern(value) {
+            try {
+              // eslint-disable-next-line
+              new URLPattern(value);
+              return true;
+            } catch (error) {
+              return false;
+            }
+          },
+          shouldStartWithHTTP(value) {
+            if (value) {
+              return (
+                value.startsWith('https://') || value.startsWith('http://')
+              );
+            }
+            return false;
+          },
         },
         timeOnPage: {
           required,
@@ -237,7 +263,7 @@ export default {
       if (this.isOngoingType) {
         return this.$store.getters['inboxes/getWebsiteInboxes'];
       }
-      return this.$store.getters['inboxes/getTwilioInboxes'];
+      return this.$store.getters['inboxes/getSMSInboxes'];
     },
     sendersAndBotList() {
       return [
@@ -280,6 +306,9 @@ export default {
           inbox_id: this.selectedInbox,
           sender_id: this.selectedSender || null,
           enabled: this.enabled,
+          trigger_only_during_business_hours:
+            // eslint-disable-next-line prettier/prettier
+            this.triggerOnlyDuringBusinessHours,
           trigger_rules: {
             url: this.endPoint,
             time_on_page: this.timeOnPage,

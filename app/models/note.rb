@@ -16,13 +16,8 @@
 #  index_notes_on_contact_id  (contact_id)
 #  index_notes_on_user_id     (user_id)
 #
-# Foreign Keys
-#
-#  fk_rails_...  (account_id => accounts.id)
-#  fk_rails_...  (contact_id => contacts.id)
-#  fk_rails_...  (user_id => users.id)
-#
 class Note < ApplicationRecord
+  before_validation :ensure_account_id
   validates :content, presence: true
   validates :account_id, presence: true
   validates :contact_id, presence: true
@@ -31,4 +26,12 @@ class Note < ApplicationRecord
   belongs_to :account
   belongs_to :contact
   belongs_to :user
+
+  scope :latest, -> { order(created_at: :desc) }
+
+  private
+
+  def ensure_account_id
+    self.account_id = contact&.account_id
+  end
 end

@@ -1,6 +1,8 @@
+// scss-lint:disable MergeableSelector
+
 @mixin bubble-with-types {
-  @include padding($space-small $space-normal);
-  @include margin($zero);
+  padding: $space-small $space-normal;
+  margin: 0;
   background: $color-woot;
   border-radius: $space-one;
   color: var(--white);
@@ -17,7 +19,8 @@
     }
   }
 
-  .image {
+  .image,
+  .video {
     cursor: pointer;
     position: relative;
 
@@ -26,18 +29,38 @@
     }
 
     .modal-image {
-      max-width: 85%;
+      max-height: 90%;
+      max-width: 90%;
+    }
+
+    .modal-video {
+      max-height: 75vh;
+      max-width: 100%;
     }
 
     &::before {
-      background-image: linear-gradient(-180deg, transparent 3%, $color-heading 130%);
+      background-image: linear-gradient(
+        -180deg,
+        transparent 3%,
+        $color-heading 130%
+      );
       bottom: 0;
       content: '';
       height: 20%;
       left: 0;
-      opacity: .8;
+      opacity: 0.8;
       position: absolute;
       width: 100%;
+    }
+  }
+
+  .video {
+    .modal-container {
+      width: auto;
+
+      .modal--close {
+        z-index: var(--z-index-low);
+      }
     }
   }
 }
@@ -58,16 +81,19 @@
   }
 
   .conversations-list {
-    @include flex-weight(1);
-    @include scroll-on-hover;
+    overflow-y: auto;
+    flex: 1 1;
+
+    @include breakpoint(large up) {
+      @include scroll-on-hover;
+    }
   }
 
   .chat-list__top {
     @include flex;
-    @include padding($zero $zero $space-micro $zero);
-
     align-items: center;
     justify-content: space-between;
+    padding: $zero $zero $space-micro;
 
     .page-title {
       margin-bottom: $zero;
@@ -75,13 +101,13 @@
     }
 
     .status--filter {
-      @include padding($zero null $zero $space-normal);
-      @include margin($space-smaller $space-slab $zero $zero);
       background-color: $color-background-light;
       border: 1px solid $color-border;
       float: right;
       font-size: $font-size-mini;
       height: $space-medium;
+      margin: 0;
+      padding: $zero $space-medium $zero $space-normal;
       width: auto;
     }
   }
@@ -93,19 +119,19 @@
 
 .conversation-panel {
   @include flex;
-  @include flex-weight(1);
-  @include margin($zero);
+  flex: 1 1 1px;
   flex-direction: column;
   height: 100%;
+  margin: 0;
   overflow-y: auto;
   padding-bottom: var(--space-normal);
   position: relative;
 }
 
-.conversation-panel>li {
+.conversation-panel > li {
   @include flex;
   @include flex-shrink;
-  @include margin($zero $zero $space-micro);
+  margin: $zero $zero $space-micro;
   position: relative;
 
   &:first-child {
@@ -117,11 +143,11 @@
   }
 
   &.unread--toast {
-    +.right {
-      margin-bottom: 0;
+    + .right {
+      margin-bottom: var(--space-micro);
     }
 
-    +.left {
+    + .left {
       margin-bottom: 0;
     }
 
@@ -148,9 +174,7 @@
     }
   }
 
-
   &.left {
-
     .bubble {
       @include border-normal;
       background: $white;
@@ -181,10 +205,9 @@
           color: $color-primary-dark;
         }
       }
-
     }
 
-    +.right {
+    + .right {
       margin-top: $space-one;
 
       .bubble {
@@ -192,8 +215,8 @@
       }
     }
 
-    +.unread--toast {
-      +.right {
+    + .unread--toast {
+      + .right {
         margin-top: $space-one;
 
         .bubble {
@@ -201,7 +224,7 @@
         }
       }
 
-      +.left {
+      + .left {
         margin-top: 0;
       }
     }
@@ -211,8 +234,14 @@
     @include flex-align(right, null);
 
     .wrap {
+      align-items: flex-end;
+      display: flex;
       margin-right: $space-normal;
       text-align: right;
+
+      .sender--info {
+        padding: var(--space-small) 0 var(--space-smaller) var(--space-small);
+      }
     }
 
     .bubble {
@@ -241,7 +270,7 @@
       }
     }
 
-    +.left {
+    + .left {
       margin-top: $space-one;
 
       .bubble {
@@ -249,8 +278,8 @@
       }
     }
 
-    +.unread--toast {
-      +.left {
+    + .unread--toast {
+      + .left {
         margin-top: $space-one;
 
         .bubble {
@@ -258,11 +287,10 @@
         }
       }
 
-      +.right {
+      + .right {
         margin-top: 0;
       }
     }
-
   }
 
   &.center {
@@ -270,10 +298,9 @@
   }
 
   .wrap {
-    @include margin($zero $space-normal);
-
     --bubble-max-width: 49.6rem;
-    max-width: Min(var(--bubble-max-width), 85%);
+    margin: $zero $space-normal;
+    max-width: Min(var(--bubble-max-width), 84%);
 
     .sender--name {
       font-size: $font-size-mini;
@@ -297,9 +324,11 @@
     font-size: var(--font-size-small);
     justify-content: center;
     margin: var(--space-smaller) 0;
-    padding: var(--space-smaller) var(--space-micro) var(--space-smaller) var(--space-one);
+    padding: var(--space-smaller) var(--space-micro) var(--space-smaller)
+      var(--space-one);
 
     .is-text {
+      align-items: center;
       display: inline-flex;
       text-align: start;
 
@@ -348,7 +377,6 @@
 }
 
 .left .bubble .text-content {
-
   h1,
   h2,
   h3,
@@ -377,7 +405,6 @@
 }
 
 .right .bubble .text-content {
-
   h1,
   h2,
   h3,

@@ -19,18 +19,21 @@
           >
             <woot-button
               class="multiselect-dropdown--item"
-              variant="clear"
+              :variant="isActive(option) ? 'hollow' : 'clear'"
+              color-scheme="secondary"
               :class="{
-                active: option.id === (selectedItem && selectedItem.id),
+                active: isActive(option),
               }"
               @click="() => onclick(option)"
             >
               <div class="user-wrap">
                 <Thumbnail
+                  v-if="hasThumbnail"
                   :src="option.thumbnail"
                   size="24px"
                   :username="option.name"
                   :status="option.availability_status"
+                  has-border
                 />
                 <div class="name-wrap">
                   <span
@@ -39,9 +42,9 @@
                   >
                     {{ option.name }}
                   </span>
-                  <i
+                  <fluent-icon
                     v-if="option.id === (selectedItem && selectedItem.id)"
-                    class="icon ion-checkmark-round"
+                    icon="checkmark"
                   />
                 </div>
               </div>
@@ -60,6 +63,7 @@
 import WootDropdownItem from 'shared/components/ui/dropdown/DropdownItem.vue';
 import WootDropdownMenu from 'shared/components/ui/dropdown/DropdownMenu.vue';
 import Thumbnail from 'dashboard/components/widgets/Thumbnail.vue';
+
 export default {
   components: {
     WootDropdownItem,
@@ -75,6 +79,10 @@ export default {
     selectedItem: {
       type: Object,
       default: () => ({}),
+    },
+    hasThumbnail: {
+      type: Boolean,
+      default: true,
     },
     inputPlaceholder: {
       type: String,
@@ -114,6 +122,9 @@ export default {
     focusInput() {
       this.$refs.searchbar.focus();
     },
+    isActive(option) {
+      return this.selectedItem ? option.id === this.selectedItem.id : false;
+    },
   },
 };
 </script>
@@ -123,7 +134,7 @@ export default {
   width: 100%;
   display: flex;
   flex-direction: column;
-  max-height: 16rem;
+  max-height: 20rem;
 }
 
 .search-wrap {
@@ -156,7 +167,7 @@ export default {
 
 .multiselect-dropdown--list {
   width: 100%;
-  max-height: 12rem;
+  max-height: 16rem;
 }
 
 .multiselect-dropdown--item {
@@ -164,12 +175,17 @@ export default {
   width: 100%;
 
   &.active {
-    background-color: var(--w-50);
-    color: var(--w-900);
-    font-weight: var(--font-weight-bold);
+    background: var(--s-25);
+    border-color: var(--s-50);
+    font-weight: var(--font-weight-medium);
   }
 
   &:focus {
+    background-color: var(--color-background-light);
+  }
+
+  &:hover {
+    color: var(--s-800);
     background-color: var(--color-background);
   }
 }
@@ -184,6 +200,7 @@ export default {
   justify-content: space-between;
   min-width: 0;
   width: 100%;
+  align-items: center;
 }
 
 .name {

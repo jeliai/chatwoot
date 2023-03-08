@@ -4,12 +4,19 @@
     <title>
       <%= @global_config['INSTALLATION_NAME'] %>
     </title>
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, user-scalable=0"/>
     <% if @global_config['DISPLAY_MANIFEST'] %>
+<<<<<<< HEAD
       <meta name="msapplication-TileColor" content="#fc7e43">
       <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
       <meta name="theme-color" content="#fc7e43">
       <meta name="description" content="Jelibot | AI Chatbot, LiveChat, Voice and Social Media communication platform">
+=======
+      <meta name="msapplication-TileColor" content="#fc7658">
+      <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+      <meta name="theme-color" content="#fc7658">
+      <meta name="description" content="Chatwoot is a customer support solution that helps companies engage customers over Messenger, Twitter, Telegram, WeChat, Whatsapp. Simply connect your channels and converse with your customers from a single place. Easily add new agents to your system and have them own and resolve conversations with customers.Chatwoot also gives you real-time reports to measure your team's performance, canned responses to easily respond to frequently asked questions and private notes for agents to collaborate among themselves.">
+>>>>>>> bec91e702fe5ec2b85ebf43a50119944588b89ed
       <% if ENV['IOS_APP_IDENTIFIER'].present? %>
         <meta name="apple-itunes-app" content='app-id=<%= ENV['IOS_APP_IDENTIFIER'] %>'>
       <% end %>
@@ -33,10 +40,13 @@
     <script>
       window.chatwootConfig = {
         hostURL: '<%= ENV.fetch('FRONTEND_URL', '') %>',
+        helpCenterURL: '<%= ENV.fetch('HELPCENTER_URL', '') %>',
         fbAppId: '<%= ENV.fetch('FB_APP_ID', nil) %>',
-        signupEnabled: '<%= ENV.fetch('ENABLE_ACCOUNT_SIGNUP', true) %>',
-        <% if ENV['VAPID_PUBLIC_KEY'] %>
-        vapidPublicKey: new Uint8Array(<%= Base64.urlsafe_decode64(ENV['VAPID_PUBLIC_KEY']).bytes %>),
+        fbApiVersion: '<%= @global_config['FACEBOOK_API_VERSION'] %>',
+        signupEnabled: '<%= @global_config['ENABLE_ACCOUNT_SIGNUP'] %>',
+        isEnterprise: '<%= @global_config['IS_ENTERPRISE'] %>',
+        <% if @global_config['VAPID_PUBLIC_KEY'] %>
+        vapidPublicKey: new Uint8Array(<%= Base64.urlsafe_decode64(@global_config['VAPID_PUBLIC_KEY']).bytes %>),
         <% end %>
         enabledLanguages: <%= available_locales_with_name.to_json.html_safe %>,
         selectedLocale: '<%= I18n.locale %>'
@@ -48,6 +58,13 @@
       }
       window.errorLoggingConfig = '<%= ENV.fetch('SENTRY_DSN', '')%>'
     </script>
+    <% if @global_config['ANALYTICS_TOKEN'].present? %>
+    <script>
+      window.analyticsConfig = {
+        token: '<%= @global_config['ANALYTICS_TOKEN'] %>',
+      }
+    </script>
+    <% end %>
     <%= javascript_pack_tag 'application' %>
     <%= stylesheet_pack_tag 'application' %>
   </head>
@@ -55,21 +72,14 @@
     <div id="app"></div>
     <noscript id="noscript">This app works best with JavaScript enabled.</noscript>
     <%= yield %>
-    <% @global_config['CHATWOOT_INBOX_TOKEN'] %>
-    <% if @global_config['CHATWOOT_INBOX_TOKEN'] %>
+    <% if @global_config['CHATWOOT_INBOX_TOKEN'].present? %>
     <script>
-      window.chatwootSettings = {
-        hideMessageBubble: true,
-        position: 'left',
-      };
+      window.chatwootSettings = { hideMessageBubble: true, position: 'left' };
       (function(d,t) {
-        var BASE_URL="";
+        var BASE_URL='<%= ENV.fetch('FRONTEND_URL', 'https://app.chatwoot.com') %>';
         var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
-        g.src=BASE_URL+"/packs/js/sdk.js";
-        g.defer = true;
-        g.async = true;
+        g.src=BASE_URL+"/packs/js/sdk.js"; g.defer=true; g.async=true;
         s.parentNode.insertBefore(g,s);
-        s.async=!0;
         g.onload=function(){
           window.chatwootSDK.run({
             websiteToken: '<%= @global_config['CHATWOOT_INBOX_TOKEN'] %>',

@@ -6,7 +6,7 @@
   >
     <img
       v-if="channel.key === 'facebook'"
-      src="~dashboard/assets/images/channels/facebook.png"
+      src="~dashboard/assets/images/channels/messenger.png"
     />
     <img
       v-if="channel.key === 'twitter'"
@@ -67,6 +67,9 @@ export default {
       if (Object.keys(this.enabledFeatures).length === 0) {
         return false;
       }
+      if (key === 'website') {
+        return this.enabledFeatures.channel_website;
+      }
       if (key === 'facebook') {
         return this.enabledFeatures.channel_facebook;
       }
@@ -76,7 +79,16 @@ export default {
       if (key === 'email') {
         return this.enabledFeatures.channel_email;
       }
-      return ['website', 'twilio', 'api', 'whatsapp', 'sms'].includes(key);
+
+      return [
+        'website',
+        'twilio',
+        'api',
+        'whatsapp',
+        'sms',
+        'telegram',
+        'line',
+      ].includes(key);
     },
   },
   methods: {

@@ -4,13 +4,17 @@ class Conversations::EventDataPresenter < SimpleDelegator
       additional_attributes: additional_attributes,
       can_reply: can_reply?,
       channel: inbox.try(:channel_type),
+      contact_inbox: contact_inbox,
       id: display_id,
       inbox_id: inbox_id,
-      contact_inbox: contact_inbox,
       messages: push_messages,
+      labels: label_list,
       meta: push_meta,
       status: status,
+      custom_attributes: custom_attributes,
+      snoozed_until: snoozed_until,
       unread_count: unread_incoming_messages.count,
+      first_reply_created_at: first_reply_created_at,
       **push_timestamps
     }
   end
@@ -22,7 +26,12 @@ class Conversations::EventDataPresenter < SimpleDelegator
   end
 
   def push_meta
-    { sender: contact.push_event_data, assignee: assignee&.push_event_data }
+    {
+      sender: contact.push_event_data,
+      assignee: assignee&.push_event_data,
+      team: team&.push_event_data,
+      hmac_verified: contact_inbox&.hmac_verified
+    }
   end
 
   def push_timestamps

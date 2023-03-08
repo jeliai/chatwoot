@@ -1,23 +1,29 @@
 <template>
-  <div v-if="globalConfig.brandName" class="branding">
+  <div
+    v-if="globalConfig.brandName && !disableBranding"
+    class="px-0 py-3 flex justify-center"
+  >
     <a
       :href="brandRedirectURL"
       rel="noreferrer noopener nofollow"
       target="_blank"
-      class="branding--link w-full justify-center"
+      class="branding--link justify-center"
     >
-      <img :alt="globalConfig.brandName" :src="globalConfig.logoThumbnail" />
+      <img
+        class="branding--image"
+        :alt="globalConfig.brandName"
+        :src="globalConfig.logoThumbnail"
+      />
       <span>
         {{ useInstallationName($t('POWERED_BY'), globalConfig.brandName) }}
       </span>
     </a>
   </div>
-  <div v-else class="brand--alternative" />
+  <div v-else class="p-3" />
 </template>
 
 <script>
 import globalConfigMixin from 'shared/mixins/globalConfigMixin';
-import { BUS_EVENTS } from 'shared/constants/busEvents';
 
 const {
   LOGO_THUMBNAIL: logoThumbnail,
@@ -27,9 +33,14 @@ const {
 
 export default {
   mixins: [globalConfigMixin],
+  props: {
+    disableBranding: {
+      type: Boolean,
+      default: false,
+    },
+  },
   data() {
     return {
-      referrerHost: '',
       globalConfig: {
         brandName,
         logoThumbnail,
@@ -39,17 +50,18 @@ export default {
   },
   computed: {
     brandRedirectURL() {
-      const baseURL = `${this.globalConfig.widgetBrandURL}?utm_source=widget_branding`;
-      if (this.referrerHost) {
-        return `${baseURL}&utm_referrer=${this.referrerHost}`;
+      try {
+        // const referrerHost = this.$store.getters['appConfig/getReferrerHost'];
+        const baseURL = `https://www.jelibot.com`;
+        // if (referrerHost) {
+        //   return `${baseURL}&utm_referrer=${referrerHost}`;
+        // }
+        return baseURL;
+      } catch (e) {
+        // Suppressing the error as getter is not defined in some cases
       }
-      return baseURL;
+      return '';
     },
-  },
-  mounted() {
-    bus.$on(BUS_EVENTS.SET_REFERRER_HOST, referrerHost => {
-      this.referrerHost = referrerHost;
-    });
   },
 };
 </script>
@@ -57,24 +69,16 @@ export default {
 <style scoped lang="scss">
 @import '~widget/assets/scss/variables.scss';
 
-.branding {
-  align-items: center;
-  display: flex;
-  justify-content: center;
-  padding: $space-normal 0 $space-slab;
-  text-align: center;
-
-  img {
-    margin-right: $space-smaller;
-    max-width: $space-slab;
-    max-height: $space-slab;
-  }
+.branding--image {
+  margin-right: $space-smaller;
+  max-width: $space-slab;
+  max-height: $space-slab;
 }
 
 .branding--link {
   color: $color-light-gray;
   cursor: pointer;
-  display: flex;
+  display: inline-flex;
   filter: grayscale(1);
   font-size: $font-size-small;
   opacity: 0.9;
@@ -85,9 +89,5 @@ export default {
     opacity: 1;
     color: $color-gray;
   }
-}
-
-.brand--alternative {
-  padding: $space-slab;
 }
 </style>

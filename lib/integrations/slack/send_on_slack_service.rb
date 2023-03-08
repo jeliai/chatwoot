@@ -36,30 +36,58 @@ class Integrations::Slack::SendOnSlackService < Base::SendOnChannelService
     if conversation.identifier.present?
       "#{private_indicator}#{message.content}"
     else
-      "*Inbox: #{message.inbox.name} [#{message.inbox.inbox_type}]* \n\n #{message.content}"
+      "\n*Inbox:* #{message.inbox.name} (#{message.inbox.inbox_type})\n\n#{message.content}"
     end
   end
 
   def avatar_url(sender)
-    sender.try(:avatar_url) || "#{ENV['FRONTEND_URL']}/admin/avatar_square.png"
+    sender_type = sender.instance_of?(Contact) ? 'contact' : 'user'
+    "#{ENV.fetch('FRONTEND_URL', nil)}/integrations/slack/#{sender_type}.png"
   end
 
   def send_message
-    @slack_message = slack_client.chat_postMessage(
-      channel: hook.reference_id,
-      text: message_content,
-      username: sender_name(message.sender),
-      thread_ts: conversation.identifier,
-      icon_url: avatar_url(message.sender)
-    )
+    post_message if message_content.present?
+    upload_file if message.attachments.any?
   rescue Slack::Web::Api::Errors::AccountInactive => e
-    Rails.logger.info e
+    Rails.logger.error e
     hook.authorization_error!
     hook.disable if hook.enabled?
   end
 
+  def post_message
+    @slack_message = slack_client.chat_postMessage(
+      channel: hook.reference_id,
+      text: ActionView::Base.full_sanitizer.sanitize(message_content),
+      username: sender_name(message.sender),
+      thread_ts: conversation.identifier,
+      icon_url: avatar_url(message.sender)
+    )
+  end
+
+  def upload_file
+    result = slack_client.files_upload({
+      channels: hook.reference_id,
+      initial_comment: 'Attached File!',
+      thread_ts: conversation.identifier
+    }.merge(file_information))
+    Rails.logger.info(result)
+  end
+
+  def file_type
+    File.extname(message.attachments.first.download_url).strip.downcase[1..]
+  end
+
+  def file_information
+    {
+      filename: message.attachments.first.file.filename,
+      filetype: file_type,
+      content: message.attachments.first.file.download,
+      title: message.attachments.first.file.filename
+    }
+  end
+
   def sender_name(sender)
-    sender.try(:name) ? "#{sender_type(sender)}: #{sender.try(:name)}" : sender_type(sender)
+    sender.try(:name) ? "#{sender.try(:name)} (#{sender_type(sender)})" : sender_type(sender)
   end
 
   def sender_type(sender)

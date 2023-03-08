@@ -14,27 +14,31 @@
       >
         <woot-button
           size="small"
-          variant="clear"
+          variant="smooth"
           color-scheme="secondary"
           class-names="goto-first"
           :is-disabled="hasFirstPage"
           @click="onFirstPage"
         >
-          <i class="ion-chevron-left" />
-          <i class="ion-chevron-left" />
+          <fluent-icon icon="chevron-left" size="18" />
+          <fluent-icon
+            icon="chevron-left"
+            size="18"
+            class="margin-left-minus-slab"
+          />
         </woot-button>
         <woot-button
           size="small"
-          variant="clear"
+          variant="smooth"
           color-scheme="secondary"
           :is-disabled="hasPrevPage"
           @click="onPrevPage"
         >
-          <i class="ion-chevron-left" />
+          <fluent-icon icon="chevron-left" size="18" />
         </woot-button>
         <woot-button
           size="small"
-          variant="clear"
+          variant="smooth"
           color-scheme="secondary"
           @click.prevent
         >
@@ -42,23 +46,27 @@
         </woot-button>
         <woot-button
           size="small"
-          variant="clear"
+          variant="smooth"
           color-scheme="secondary"
           :is-disabled="hasNextPage"
           @click="onNextPage"
         >
-          <i class="ion-chevron-right" />
+          <fluent-icon icon="chevron-right" size="18" />
         </woot-button>
         <woot-button
           size="small"
-          variant="clear"
+          variant="smooth"
           color-scheme="secondary"
           class-names="goto-last"
           :is-disabled="hasLastPage"
           @click="onLastPage"
         >
-          <i class="ion-chevron-right" />
-          <i class="ion-chevron-right" />
+          <fluent-icon icon="chevron-right" size="18" />
+          <fluent-icon
+            icon="chevron-right"
+            size="18"
+            class="margin-left-minus-slab"
+          />
         </woot-button>
       </div>
     </div>
@@ -75,15 +83,11 @@ export default {
     },
     pageSize: {
       type: Number,
-      default: 15,
+      default: 25,
     },
     totalCount: {
       type: Number,
       default: 0,
-    },
-    onPageChange: {
-      type: Function,
-      default: () => {},
     },
   },
   computed: {
@@ -91,58 +95,58 @@ export default {
       return this.totalCount && !(this.firstIndex > this.totalCount);
     },
     firstIndex() {
-      const firstIndex = this.pageSize * (this.currentPage - 1) + 1;
-      return firstIndex;
+      return this.pageSize * (this.currentPage - 1) + 1;
     },
     lastIndex() {
-      const index = Math.min(this.totalCount, this.pageSize * this.currentPage);
-      return index;
+      return Math.min(this.totalCount, this.pageSize * this.currentPage);
     },
     searchButtonClass() {
       return this.searchQuery !== '' ? 'show' : '';
     },
     hasLastPage() {
-      const isDisabled =
-        this.currentPage === Math.ceil(this.totalCount / this.pageSize);
-      return isDisabled;
+      return !!Math.ceil(this.totalCount / this.pageSize);
     },
     hasFirstPage() {
-      const isDisabled = this.currentPage === 1;
-      return isDisabled;
+      return this.currentPage === 1;
     },
     hasNextPage() {
-      const isDisabled =
-        this.currentPage === Math.ceil(this.totalCount / this.pageSize);
-      return isDisabled;
+      return this.currentPage === Math.ceil(this.totalCount / this.pageSize);
     },
     hasPrevPage() {
-      const isDisabled = this.currentPage === 1;
-      return isDisabled;
+      return this.currentPage === 1;
     },
   },
   methods: {
     onNextPage() {
-      if (this.hasNextPage) return;
+      if (this.hasNextPage) {
+        return;
+      }
       const newPage = this.currentPage + 1;
       this.onPageChange(newPage);
     },
     onPrevPage() {
-      if (this.hasPrevPage) return;
-
+      if (this.hasPrevPage) {
+        return;
+      }
       const newPage = this.currentPage - 1;
       this.onPageChange(newPage);
     },
     onFirstPage() {
-      if (this.hasFirstPage) return;
-
+      if (this.hasFirstPage) {
+        return;
+      }
       const newPage = 1;
       this.onPageChange(newPage);
     },
     onLastPage() {
-      if (this.hasLastPage) return;
-
+      if (this.hasLastPage) {
+        return;
+      }
       const newPage = Math.ceil(this.totalCount / this.pageSize);
       this.onPageChange(newPage);
+    },
+    onPageChange(page) {
+      this.$emit('page-change', page);
     },
   },
 };

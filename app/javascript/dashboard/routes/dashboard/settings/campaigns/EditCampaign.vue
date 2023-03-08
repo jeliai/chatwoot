@@ -30,7 +30,7 @@
         <label :class="{ error: $v.selectedInbox.$error }">
           {{ $t('CAMPAIGN.ADD.FORM.INBOX.LABEL') }}
           <select v-model="selectedInbox" @change="onChangeInbox($event)">
-            <option v-for="item in inboxes" :key="item.name" :value="item.id">
+            <option v-for="item in inboxes" :key="item.id" :value="item.id">
               {{ item.name }}
             </option>
           </select>
@@ -87,6 +87,15 @@
           />
           {{ $t('CAMPAIGN.ADD.FORM.ENABLED') }}
         </label>
+        <label v-if="isOngoingType">
+          <input
+            v-model="triggerOnlyDuringBusinessHours"
+            type="checkbox"
+            value="triggerOnlyDuringBusinessHours"
+            name="triggerOnlyDuringBusinessHours"
+          />
+          {{ $t('CAMPAIGN.ADD.FORM.TRIGGER_ONLY_BUSINESS_HOURS') }}
+        </label>
       </div>
       <div class="modal-footer">
         <woot-button :is-loading="uiFlags.isCreating">
@@ -102,10 +111,12 @@
 
 <script>
 import { mapGetters } from 'vuex';
-import { required, url, minLength } from 'vuelidate/lib/validators';
+import { required } from 'vuelidate/lib/validators';
 import WootMessageEditor from 'dashboard/components/widgets/WootWriter/Editor';
 import alertMixin from 'shared/mixins/alertMixin';
 import campaignMixin from 'shared/mixins/campaignMixin';
+import { URLPattern } from 'urlpattern-polyfill';
+
 export default {
   components: {
     WootMessageEditor,
@@ -125,6 +136,7 @@ export default {
       selectedInbox: null,
       endPoint: '',
       timeOnPage: 10,
+      triggerOnlyDuringBusinessHours: false,
       show: true,
       enabled: true,
       senderList: [],
@@ -142,8 +154,21 @@ export default {
     },
     endPoint: {
       required,
-      minLength: minLength(7),
-      url,
+      shouldBeAValidURLPattern(value) {
+        try {
+          // eslint-disable-next-line
+          new URLPattern(value);
+          return true;
+        } catch (error) {
+          return false;
+        }
+      },
+      shouldStartWithHTTP(value) {
+        if (value) {
+          return value.startsWith('https://') || value.startsWith('http://');
+        }
+        return false;
+      },
     },
     timeOnPage: {
       required,
@@ -161,7 +186,7 @@ export default {
       if (this.isOngoingType) {
         return this.$store.getters['inboxes/getWebsiteInboxes'];
       }
-      return this.$store.getters['inboxes/getTwilioInboxes'];
+      return this.$store.getters['inboxes/getSMSInboxes'];
     },
     pageTitle() {
       return `${this.$t('CAMPAIGN.EDIT.TITLE')} - ${
@@ -209,6 +234,7 @@ export default {
         title,
         message,
         enabled,
+        trigger_only_during_business_hours: triggerOnlyDuringBusinessHours,
         inbox: { id: inboxId },
         trigger_rules: { url: endPoint, time_on_page: timeOnPage },
         sender,
@@ -218,6 +244,7 @@ export default {
       this.endPoint = endPoint;
       this.timeOnPage = timeOnPage;
       this.selectedInbox = inboxId;
+      this.triggerOnlyDuringBusinessHours = triggerOnlyDuringBusinessHours;
       this.selectedSender = (sender && sender.id) || 0;
       this.enabled = enabled;
       this.loadInboxMembers();
@@ -233,6 +260,9 @@ export default {
           title: this.title,
           message: this.message,
           inbox_id: this.$route.params.inboxId,
+          trigger_only_during_business_hours:
+            // eslint-disable-next-line prettier/prettier
+            this.triggerOnlyDuringBusinessHours,
           sender_id: this.selectedSender || null,
           enabled: this.enabled,
           trigger_rules: {

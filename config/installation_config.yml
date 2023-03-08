@@ -7,9 +7,9 @@
 - name: LOGO
   value: '/brand-assets/logo.svg'
 - name: BRAND_URL
-  value: 'https://www.chatwoot.com'
+  value: 'https://www.jelibot.com'
 - name: WIDGET_BRAND_URL
-  value: 'https://www.chatwoot.com'
+  value: 'https://www.jelibot.com'
 - name: BRAND_NAME
   value: 'Jelibot'
 - name: TERMS_URL
@@ -39,4 +39,36 @@
 - name: API_CHANNEL_NAME
   value:
 - name: API_CHANNEL_THUMBNAIL
+  value:
+- name: ANALYTICS_TOKEN
+  value:
+- name: DIRECT_UPLOADS_ENABLED
+  value: false
+  locked: false
+- name: HCAPTCHA_SITE_KEY
+  value:
+  locked: false
+- name: HCAPTCHA_SERVER_KEY
+  value:
+  locked: false
+- name: LOGOUT_REDIRECT_LINK
+  value: /app/login
+  locked: false
+- name: DISABLE_USER_PROFILE_UPDATE
+  value: false
+  locked: false
+- name: ENABLE_MESSENGER_CHANNEL_HUMAN_AGENT
+  value: false
+  locked: false
+- name: CSML_BOT_HOST
+  value:
+  locked: false
+- name: CSML_BOT_API_KEY
+  value:
+  locked: false
+- name: CHATWOOT_CLOUD_PLANS
+  value:
+- name: DEPLOYMENT_ENV
+  value: self-hosted
+- name: CSML_EDITOR_HOST
   value:
