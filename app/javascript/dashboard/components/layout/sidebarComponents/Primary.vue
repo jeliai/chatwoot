@@ -21,7 +21,7 @@
         icon="book-open-globe"
         name="DOCS"
         :open-in-new-page="true"
-        :to="helpDocsURL"
+        :to="https://jelibot.com"
       />
       <notification-bell @open-notification-panel="openNotificationPanel" />
       <agent-details @toggle-menu="toggleOptions" />
