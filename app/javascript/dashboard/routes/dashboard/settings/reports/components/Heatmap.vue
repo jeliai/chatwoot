@@ -146,7 +146,7 @@ $heatmap-colors: (
   level-1: var(--w-50),
   level-2: var(--w-100),
   level-3: var(--w-300),
-  level-4: var(--w-500),
+  level-4: var(--j-50),
   level-5: var(--w-700),
   level-6: var(--w-900),
 );
@@ -156,7 +156,7 @@ $heatmap-hover-border-color: (
   level-2: var(--w-50),
   level-3: var(--w-100),
   level-4: var(--w-300),
-  level-5: var(--w-500),
+  level-5: var(--j-50),
   level-6: var(--w-700),
 );
 

@@ -57,7 +57,7 @@ export default {
   }
 
   &:hover {
-    background-color: var(--w-500);
+    background-color: var(--j-50);
     color: var(--white);
   }
 }

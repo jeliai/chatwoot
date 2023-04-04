@@ -27,8 +27,8 @@ import globalConfigMixin from 'shared/mixins/globalConfigMixin';
 
 const {
   LOGO_THUMBNAIL: logoThumbnail,
-  BRAND_NAME: `Jelibot`,
-  WIDGET_BRAND_URL: `Jelibot`,
+  BRAND_NAME: brandName,
+  WIDGET_BRAND_URL: widgetBrandURL,
 } = window.globalConfig || {};
 
 export default {

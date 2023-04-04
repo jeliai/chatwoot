@@ -10,7 +10,7 @@
   --w-200: #99CEFF;
   --w-300: #70BAFF;
   --w-400: #47A6FF;
-  --w-500: #1F93FF;
+  --w-500: #F24B5E;
   --w-600: #1976CC;
   --w-700: #135899;
   --w-800: #0C3B66;
@@ -84,8 +84,10 @@
   --v-800: #450085;
   --v-900: #2B0052;
 
+  --j-50: #F24B5E;
+
   // Common color aliases
-  --color-woot: var(--w-500);
+  --color-woot: var(--j-50);
 
   --color-heading: #1f2d3d;
   --color-body: #3c4858;

@@ -282,7 +282,7 @@ export default {
   &.router-link-exact-active,
   &.is-active {
     background: var(--w-25);
-    color: var(--w-500);
+    color: var(--j-50);
     border-color: var(--w-25);
   }
 

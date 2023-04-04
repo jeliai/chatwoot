@@ -38,7 +38,7 @@ export default {
   transition: all 0.2s ease-in;
   align-items: center;
   &:hover {
-    border: 1px solid var(--w-500);
+    border: 1px solid var(--j-50);
     box-shadow: var(--shadow-medium);
     z-index: var(--z-index-high);
   }

@@ -63,12 +63,12 @@ export default {
   }
 
   &:focus {
-    border-color: var(--w-500);
+    border-color: var(--j-50);
   }
 
   &.is-active {
     background: var(--w-50);
-    color: var(--w-500);
+    color: var(--j-50);
   }
 }
 

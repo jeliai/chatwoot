@@ -75,7 +75,7 @@ export default {
   &:hover {
     .search--icon,
     .search--label {
-      color: var(--w-500);
+      color: var(--j-50);
     }
   }
 }

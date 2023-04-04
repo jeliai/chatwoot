@@ -49,6 +49,6 @@ export default {
 </script>
 <style scoped>
 .show-more--button {
-  color: var(--w-500);
+  color: var(--j-50);
 }
 </style>

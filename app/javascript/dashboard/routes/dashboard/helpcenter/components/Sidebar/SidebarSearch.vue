@@ -45,7 +45,7 @@ export default {
   border: 1px solid var(--s-50);
 
   &:focus {
-    border-color: var(--w-500);
+    border-color: var(--j-50);
   }
 }
 

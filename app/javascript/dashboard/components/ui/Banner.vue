@@ -92,7 +92,7 @@ export default {
   position: sticky;
 
   &.primary {
-    background: var(--w-500);
+    background: var(--j-50);
     .banner-action__button {
       color: var(--white);
     }

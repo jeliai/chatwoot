@@ -129,7 +129,7 @@ export default {
 }
 
 .icon-outgoing {
-  color: var(--w-500);
+  color: var(--j-50);
   padding: var(--space-micro);
   padding-right: var(--space-smaller);
 }

@@ -125,12 +125,12 @@ $label-badge-size: var(--space-slab);
 
   &.is-active {
     background: var(--w-25);
-    color: var(--w-500);
+    color: var(--j-50);
     border-color: var(--w-25);
   }
   &.is-active .count-view {
     background: var(--w-75);
-    color: var(--w-500);
+    color: var(--j-50);
   }
 }
 

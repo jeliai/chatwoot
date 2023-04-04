@@ -133,7 +133,7 @@ export default {
 
     .visibility-check {
       position: absolute;
-      color: var(--w-500);
+      color: var(--j-50);
       top: var(--space-small);
       right: var(--space-small);
     }

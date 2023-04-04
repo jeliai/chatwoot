@@ -109,7 +109,7 @@ export default {
   display: flex;
   justify-content: flex-end;
   width: var(--space-slab);
-  color: var(--w-500);
+  color: var(--j-50);
 }
 
 .cw-accordion--content {
