@@ -11,11 +11,11 @@
     >
       <img
         class="branding--image"
-        :alt="globalConfig.brandName"
+        :alt="Jelibot"
         :src="globalConfig.logoThumbnail"
       />
       <span>
-        {{ useInstallationName($t('POWERED_BY'), globalConfig.brandName) }}
+        {{ useInstallationName($t('POWERED_BY'), $t('Jelibot')) }}
       </span>
     </a>
   </div>
@@ -27,8 +27,8 @@ import globalConfigMixin from 'shared/mixins/globalConfigMixin';
 
 const {
   LOGO_THUMBNAIL: logoThumbnail,
-  BRAND_NAME: brandName,
-  WIDGET_BRAND_URL: widgetBrandURL,
+  BRAND_NAME: `Jelibot`,
+  WIDGET_BRAND_URL: `Jelibot`,
 } = window.globalConfig || {};
 
 export default {
@@ -51,13 +51,7 @@ export default {
   computed: {
     brandRedirectURL() {
       try {
-        const referrerHost = this.$store.getters['appConfig/getReferrerHost'];
-        const baseURL = `${this.globalConfig.widgetBrandURL}?utm_source=${
-          referrerHost ? 'widget_branding' : 'survey_branding'
-        }`;
-        if (referrerHost) {
-          return `${baseURL}&utm_referrer=${referrerHost}`;
-        }
+        const baseURL = `https://www.jelibot.com`;
         return baseURL;
       } catch (e) {
         // Suppressing the error as getter is not defined in some cases
