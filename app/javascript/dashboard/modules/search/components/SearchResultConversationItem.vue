@@ -60,10 +60,21 @@ export default {
       type: [String, Date, Number],
       default: '',
     },
+    messageId: {
+      type: Number,
+      default: 0,
+    },
   },
   computed: {
     navigateTo() {
-      return frontendURL(`accounts/${this.accountId}/conversations/${this.id}`);
+      const params = {};
+      if (this.messageId) {
+        params.messageId = this.messageId;
+      }
+      return frontendURL(
+        `accounts/${this.accountId}/conversations/${this.id}`,
+        params
+      );
     },
     createdAtTime() {
       return this.dynamicTime(this.createdAt);
@@ -113,7 +124,7 @@ export default {
   margin-left: var(--space-smaller);
 }
 .conversation-details {
-  margin-left: var(--space-normal);
+  margin-left: var(--space-small);
   flex-grow: 1;
   min-width: 0;
 }
