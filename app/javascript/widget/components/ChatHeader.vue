@@ -30,12 +30,12 @@
             "
           />
         </div>
-        <div
+        <!-- <div
           class="text-xs mt-1"
           :class="$dm('text-black-700', 'dark:text-slate-400')"
         >
           {{ replyWaitMessage }}
-        </div>
+        </div>-->
       </div>
     </div>
     <header-actions :show-popout-button="showPopoutButton" />
