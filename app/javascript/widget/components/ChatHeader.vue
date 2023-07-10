@@ -4,7 +4,7 @@
     :class="$dm('bg-white', 'dark:bg-slate-900')"
   >
     <div class="flex items-center">
-      <button v-if="showBackButton" @click="onBackButtonClick">
+      <button v-if="false" @click="onBackButtonClick">
         <fluent-icon
           icon="chevron-left"
           size="24"
@@ -38,7 +38,7 @@
         </div>-->
       </div>
     </div>
-    <header-actions :show-popout-button="showPopoutButton" />
+   <!-- <header-actions :show-popout-button="showPopoutButton" />--> 
   </header>
 </template>
 
